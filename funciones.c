@@ -104,37 +104,23 @@ void cargarEstructura(const char *linea, t_datos *socio)
 }
 
 
-/** CREO QUE ESTA FUNCION SE VA **/
-//void mostrarVector(t_datos* vPersonas)
-//{
-//    printf("Datos sobre socios: \n");
-//    for(int i = 0; i<2; i++)
-//    {
-//        printf("PERSONA [%d]:\n", i);
-//        printf("%lg\t%s  %d/%d/%d   %c   %d/%d/%d\t%s\t%d/%d/%d   %c\n", vPersonas->dni,vPersonas->nomAp, vPersonas->fechNac.dia,vPersonas->fechNac.mes,vPersonas->fechNac.anio,
-//        vPersonas->sexo, vPersonas->fechAfi.anio, vPersonas->fechAfi.mes, vPersonas->fechAfi.dia, vPersonas->categoria,
-//        vPersonas->fechUltCuot.anio, vPersonas->fechUltCuot.mes, vPersonas->fechUltCuot.dia, vPersonas->estado);
-//        vPersonas++;
-//    }
-//}
-
 int validarDatos(t_datos *socio, t_fecha *fProceso)
 {
    int hayError = 0;
 
-    ///Documento
+    ///Documento - Listo
     hayError += validarDocumento(socio->dni);
 
     ///Nombre y apellido
     normalizarApeYNom(socio->nomAp); ///No valido nada, solo normalizo.
 
-    ///FechaNacimiento
+    ///FechaNacimiento - Listo
     if(esFechaValida(&socio->fechNac) == TODO_OK)
         hayError += fechaFormal(&socio->fechNac, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Sexo
+    ///Sexo - Listo
     hayError += validarSexo(&socio->sexo); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
 
     ///Fecha Afilicación
@@ -143,16 +129,16 @@ int validarDatos(t_datos *socio, t_fecha *fProceso)
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Categoria
+    ///Categoria - Listo
     hayError += validarCategoria(socio->categoria);
 
-    ///Ultima cuota paga
+    ///Ultima cuota paga - Listo
     if(esFechaValida(&socio->fechUltCuot) == TODO_OK)
         hayError += fechaUltimaCuotaPaga(&socio->fechAfi, &socio->fechUltCuot, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Estado
+    ///Estado - Listo
     hayError =+ validarEstado(&socio->estado); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
 
 
@@ -287,21 +273,49 @@ char* cadAMayuscula(char *categoria)
 int fechaUltimaCuotaPaga(t_fecha *fechAfi, t_fecha *fechUltCuot, t_fecha *fProceso)
 {
     ///Fecha de afiliación < fecha última cuota paga <= fecha de procesao
-    if(comparaFechas(fechAfi, fechUltCuot) == ERROR)
+    if(comparaFechasMenorEstricto(fechAfi, fechUltCuot) == ERROR)
         return FALLA_DATO;
 
-    if(comparaFechas(fechUltCuot, fProceso) == ERROR)
+    if(comparaFechasMenorIgual(fechUltCuot, fProceso) == ERROR)
         return FALLA_DATO;
 
     return DATO_OK;
 }
 
-int comparaFechas(t_fecha *fechA, t_fecha *fechB)
+int comparaFechasMenorEstricto(t_fecha *fechA, t_fecha *fechB)
 {
-    //if()
-
-    return TODO_OK;
+    if (fechA->anio > fechB->anio)
+        return ERROR;
+    if (fechA->anio == fechB->anio)
+    {
+        if (fechA->mes > fechB->mes)
+            return ERROR;
+        if (fechA->mes == fechB->mes)
+        {
+            if (fechA->dia >= fechB->dia)
+                return ERROR;
+        }
+    }
+    return TODO_OK; /// fechA < fechB -> cumple
 }
+
+int comparaFechasMenorIgual(t_fecha *fechA, t_fecha *fechB)
+{
+    if (fechA->anio > fechB->anio)
+        return ERROR;
+    if (fechA->anio == fechB->anio)
+    {
+        if (fechA->mes > fechB->mes)
+            return ERROR;
+        if (fechA->mes == fechB->mes)
+        {
+            if (fechA->dia > fechB->dia)
+                return ERROR;
+        }
+    }
+    return TODO_OK; /// fechA <= fechB -> Cumple
+}
+
 
 ///Estado
 int validarEstado(char *estado)
