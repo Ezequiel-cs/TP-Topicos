@@ -62,7 +62,6 @@ void aMayuscula(char *c);
 int fechaAfiliacion(t_fecha *fechNac, t_fecha *fechAfi, t_fecha *fProceso);
 int comparaFechasMenorEstricto(t_fecha *fechA, t_fecha *fechB);
 int comparaFechasMenorIgual(t_fecha *fechA, t_fecha *fechB);
-int comparaFechasAfiCuot(t_fecha *fechA, t_fecha *fechB);
 int validarCategoria(char* categoria);
 char* cadAMayuscula(char *categoria);
 int fechaUltimaCuotaPaga(t_fecha *fechAfi, t_fecha *fechUltCuot, t_fecha *fProceso);
