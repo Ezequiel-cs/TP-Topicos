@@ -7,7 +7,7 @@
 #include <stdbool.h> ///Para booleanos
 
 #define TAMNOMAP 60
-#define TAMCAT 10
+#define TAMCAT 12
 
 #define TODO_OK 1
 #define ERROR 0
@@ -15,6 +15,7 @@
 #define FALLA_DATO 1
 #define DATO_OK 0
 #define ANIOS_RESTA 10
+#define FALLA_CADENA ""
 
 #define ARCH_TXTS "socios.txt"
 #define ARCH_BIN "socios.bin"
@@ -42,7 +43,6 @@ typedef struct{
 
 ///Main
 void ingresarFechaProceso(t_fecha *f);
-//void mostrarVector(t_datos* vPersonas);   // se debería ir
 
 ///Archivos
 int abrirArchivos(t_fecha *fProceso);
@@ -54,9 +54,7 @@ int validarDatos(t_datos *socio, t_fecha *fProceso);
 int validarDocumento(long dni);
 char* normalizarApeYNom(char *apeYNom);
 int fechaFormal(t_fecha *fechNac, t_fecha *fProceso);
-/**  10-05  **/
 t_fecha restaFecha(t_fecha *fProceso);
-/**  10-05  **/
 int validarSexo(char *sexo);
 void aMayuscula(char *c);
 int fechaAfiliacion(t_fecha *fechNac, t_fecha *fechAfi, t_fecha *fProceso);
@@ -71,5 +69,9 @@ int validarEstado(char *estado);
 int esFechaValida(const t_fecha *f);
 int cantDiaMes(int mes, int anio);
 bool esBisiesto(int anio);
+
+
+int esLetra(char c);
+void aMinuscula(char *c);
 
 #endif // CABECERA_H_INCLUDED

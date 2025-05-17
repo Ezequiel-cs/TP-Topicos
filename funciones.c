@@ -78,7 +78,7 @@ void leerArchivos(FILE *ptxtS, FILE *pbin, FILE *ptxtE, t_fecha *fProceso)
     {
         cargarEstructura(linea, &socio);
 
-        if(validarDatos(&socio, fProceso) == 0)
+        if(validarDatos(&socio, fProceso) == DATO_OK)
         {
             //escribo en binario
         }
@@ -106,7 +106,7 @@ void cargarEstructura(const char *linea, t_datos *socio)
 
 int validarDatos(t_datos *socio, t_fecha *fProceso)
 {
-   int hayError = 0;
+    int hayError = 0;
 
     ///Documento - Listo
     hayError += validarDocumento(socio->dni);
@@ -163,12 +163,86 @@ int validarDocumento(long dni)
 }
 
 
-///Nombre y apellido
+///Nombre y apellido                    Deberia preguntar por si es letra en lugar de espacio
 char* normalizarApeYNom(char *apeYNom)
 {
-    /** Normalizar cadena **/
+    char *lectura = apeYNom, *escritura = apeYNom;
+    int primeraLetraPal, primerPalabra = 0;
+
+    while(*lectura)
+    {
+        while(esLetra(*lectura) != TODO_OK)
+        {
+            lectura++;
+        }
+
+        if(*lectura != '\0')
+        {
+            primeraLetraPal = 1;
+
+            while(*lectura != '\0' && esLetra(*lectura) == TODO_OK)
+            {
+                if(primeraLetraPal == 1)
+                    aMayuscula(lectura);
+                else
+                    aMinuscula(lectura);
+
+                *escritura = *lectura;
+                primeraLetraPal = 0;
+                lectura++;
+                escritura++;
+            }
+            primerPalabra++;
+
+            if(primerPalabra == 1)
+            {
+                *escritura = ',';
+                escritura++;
+                *escritura = ' ';
+                escritura++;
+            }
+
+            if(*lectura != '\0')
+            {
+                *escritura = ' ';
+                escritura++;
+            }
+        }
+    }
+
+    *escritura = '\0';
+
     return apeYNom;
+
 }
+
+void aMayuscula(char *c)
+{
+    if(*c >= 'a' && *c <= 'z')
+    {
+        *c = *c - ('a' - 'A');
+    }
+
+}
+
+void aMinuscula(char *c)
+{
+    if(*c >= 'A' && *c <= 'Z')
+    {
+        *c = *c + ('a' - 'A');
+    }
+}
+
+///PRUEBA
+int esLetra(char c)
+{
+    if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
+    {
+        return TODO_OK;
+    }
+    return ERROR;
+}
+
 
 
 ///Fecha de Nacimiento
@@ -217,13 +291,7 @@ int validarSexo(char *sexo)
     {
         return DATO_OK;
     }
-	return FALLA_DATO;
-}
-
-void aMayuscula(char *c)
-{
-    if(*c >= 'a' && *c <= 'z')
-        *c = *c - ('a' - 'A');
+    return FALLA_DATO;
 }
 
 
