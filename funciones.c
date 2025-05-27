@@ -162,7 +162,7 @@ int validarDatos(t_datos *socio, t_fecha *fProceso)
     normalizarApeYNom(socio->nomAp); ///No valido nada, solo normalizo.
 
     ///FechaNacimiento
-    if(esFechaValida(&socio->fechNac) == TODO_OK) ///hay error
+    if(esFechaValida(&socio->fechNac) == TODO_OK) ///validación formal
         hayError += fechaFormal(&socio->fechNac, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
@@ -171,7 +171,7 @@ int validarDatos(t_datos *socio, t_fecha *fProceso)
     hayError += validarSexo(&socio->sexo); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
 
     ///Fecha Afilicación
-    if(esFechaValida(&socio->fechAfi) == TODO_OK) ///hay error
+    if(esFechaValida(&socio->fechAfi) == TODO_OK) ///validación formal
         hayError += fechaAfiliacion(&socio->fechNac, &socio->fechAfi, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
@@ -180,7 +180,7 @@ int validarDatos(t_datos *socio, t_fecha *fProceso)
     hayError += validarCategoria(socio->categoria);
 
     ///Ultima cuota paga
-    if(esFechaValida(&socio->fechUltCuot) == TODO_OK) ///hay error
+    if(esFechaValida(&socio->fechUltCuot) == TODO_OK) ///validación formal
         hayError += fechaUltimaCuotaPaga(&socio->fechAfi, &socio->fechUltCuot, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
@@ -293,7 +293,6 @@ int esLetra(char c)
 ///Fecha de Nacimiento
 int fechaFormal(t_fecha *fechNac, t_fecha *fProceso) ///Podria mandar una copia de fProceso y no la dirección ya que no tengo que modificarla o ponerle 'const' 10-05
 {
-    ///DESARROLLAR RESTA DE AÑOS, TENIENDO EN CUENTA LA CANTIDAD DE DIAS QUE TIENE UN AÑO (PUEDE SER BISIESTO)
     t_fecha fPMenosDiez;
     fPMenosDiez = restaFecha(fProceso);
 
@@ -344,8 +343,51 @@ int validarSexo(char *sexo)
 ///fecha afiliacion
 int fechaAfiliacion(t_fecha *fechNac, t_fecha *fechAfi, t_fecha *fProceso)
 {
+    if(fechaFormal(fechNac, fProceso) != DATO_OK)                               ///Preguntar si es necesario esto
+        return FALLA_DATO;
+
     ///Fecha de nacimiento < fecha de afiliación <= fecha de proceso
+    if(comparaFechasMenorEstricto(fechNac, fechAfi) == ERROR)
+        return FALLA_DATO;
+
+    if(comparaFechasMenorIgual(fechAfi, fProceso) == ERROR)
+        return FALLA_DATO;
+
     return DATO_OK;
+}
+
+int comparaFechasMenorEstricto(t_fecha *fechA, t_fecha *fechB)
+{
+    if (fechA->anio > fechB->anio)
+        return ERROR;
+    if (fechA->anio == fechB->anio)
+    {
+        if (fechA->mes > fechB->mes)
+            return ERROR;
+        if (fechA->mes == fechB->mes)
+        {
+            if (fechA->dia >= fechB->dia)
+                return ERROR;
+        }
+    }
+    return TODO_OK; /// fechA < fechB -> cumple
+}
+
+int comparaFechasMenorIgual(t_fecha *fechA, t_fecha *fechB)
+{
+    if (fechA->anio > fechB->anio)
+        return ERROR;
+    if (fechA->anio == fechB->anio)
+    {
+        if (fechA->mes > fechB->mes)
+            return ERROR;
+        if (fechA->mes == fechB->mes)
+        {
+            if (fechA->dia > fechB->dia)
+                return ERROR;
+        }
+    }
+    return TODO_OK; /// fechA <= fechB -> Cumple
 }
 
 
@@ -393,40 +435,6 @@ int fechaUltimaCuotaPaga(t_fecha *fechAfi, t_fecha *fechUltCuot, t_fecha *fProce
         return FALLA_DATO;
 
     return DATO_OK;
-}
-
-int comparaFechasMenorEstricto(t_fecha *fechA, t_fecha *fechB)
-{
-    if (fechA->anio > fechB->anio)
-        return ERROR;
-    if (fechA->anio == fechB->anio)
-    {
-        if (fechA->mes > fechB->mes)
-            return ERROR;
-        if (fechA->mes == fechB->mes)
-        {
-            if (fechA->dia >= fechB->dia)
-                return ERROR;
-        }
-    }
-    return TODO_OK; /// fechA < fechB -> cumple
-}
-
-int comparaFechasMenorIgual(t_fecha *fechA, t_fecha *fechB)
-{
-    if (fechA->anio > fechB->anio)
-        return ERROR;
-    if (fechA->anio == fechB->anio)
-    {
-        if (fechA->mes > fechB->mes)
-            return ERROR;
-        if (fechA->mes == fechB->mes)
-        {
-            if (fechA->dia > fechB->dia)
-                return ERROR;
-        }
-    }
-    return TODO_OK; /// fechA <= fechB -> Cumple
 }
 
 

@@ -7,7 +7,7 @@ int main()
     t_fecha fProceso;
     t_indice* indice;
     int cantRegistros = 0;
-    char opcion;
+    //char opcion;
 
     ingresarFechaProceso(&fProceso);
     ///Prueba para ver si lee bien la fecha
@@ -27,7 +27,7 @@ int main()
         fflush(stdin);
 
         ///CREAR MENÚ
-        opcion = iniciarMenu();
+        //opcion = iniciarMenu();
 
         ///ZONA DE SWITCH PARA FUNCION DEPENDIENDO DE OPCION
 
