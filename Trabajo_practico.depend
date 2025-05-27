@@ -1,0 +1,16 @@
+# depslib dependency file v1.0
+1748094043 source:c:\users\pc\desktop\trabajo_practico\funciones.c
+	"cabecera.h"
+
+1748093268 c:\users\pc\desktop\trabajo_practico\cabecera.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	<time.h>
+
+1748093692 source:c:\users\pc\desktop\trabajo_practico\main.c
+	<stdio.h>
+	<stdlib.h>
+	"cabecera.h"
+

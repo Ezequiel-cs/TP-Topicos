@@ -13,7 +13,7 @@ void ingresarFechaProceso(t_fecha *f)
 }
 
 
-/*************************************** Validación de Fecha - INICIO ***************************************/
+/**************************************************** Validación Fecha ****************************************************/
 
 int esFechaValida(const t_fecha *f)
 {
@@ -42,8 +42,7 @@ bool esBisiesto(int anio)  ///Pregunar si se puede usar booleanos.
 }
 
 
-
-/*************************************** Flujo - Inicio ***************************************/
+/**************************************************** Archivos ****************************************************/
 
 int abrirArchivos(t_fecha *fProceso)
 {
@@ -53,7 +52,7 @@ int abrirArchivos(t_fecha *fProceso)
     pbin = fopen(ARCH_BIN, "wb");
     ptxtE = fopen(ARCH_TXTE, "wt");
 
-    if(!ptxtS || !pbin || !ptxtE) ///10/05 - Agrgué el '!' en ptxtE
+    if(!ptxtS || !pbin || !ptxtE)
     {
         printf("Error al abrir Archivos.");
         return ERROR;
@@ -76,19 +75,20 @@ void leerArchivos(FILE *ptxtS, FILE *pbin, FILE *ptxtE, t_fecha *fProceso)
 
     while(fgets(linea, TAM_LINEA, ptxtS))
     {
-        cargarEstructura(linea, &socio);
+        cargarEstructura(linea, &socio);  ///LEO UNA LINEA Y DECIDE EL IF
 
-        if(validarDatos(&socio, fProceso) == DATO_OK)
+        if(validarDatos(&socio, fProceso) == 0)
         {
-            //escribo en binario
+            ///ESCRIBO ARCHIVO BINARIO
+            cargarArchivoBin(pbin, &socio);
         }
         else
         {
-            //escribo en texto error
+            ///ESCRIBO ARCHIVO ERROR
+            cargarArchivoErr(ptxtE, linea);
         }
     }
 }
-
 
 void cargarEstructura(const char *linea, t_datos *socio)
 {
@@ -103,43 +103,90 @@ void cargarEstructura(const char *linea, t_datos *socio)
            &socio->estado);
 }
 
+void mostrarArchBinario(const char* pathBin, int cantRegistros)     ///SOLO PARA MOSTRAR .BIN Y CORROBORAR
+{
+    FILE* fpBin;
+    t_datos dato;
+
+    fpBin = fopen(pathBin, "rb");
+    if(fpBin == NULL)
+    {
+        printf("NO SE PUDO ABRIR EL ARCHIVO BINARIO");
+        return;
+    }
+
+    printf("CONTENIDO DEL ARCHIVO BINARIO: \n\n");
+    fread(&dato, sizeof(t_datos), 1, fpBin);
+    while(!feof(fpBin))
+    {
+        printf("%d\t%s\t%c\n", (int)dato.dni, dato.nomAp, dato.estado);
+        fread(&dato, sizeof(t_datos), 1, fpBin);
+    }
+
+    fclose(fpBin);
+
+}
+
+void cargarArchivoBin(FILE* fpBin, t_datos* linea)
+{
+    fwrite(linea, sizeof(t_datos), 1, fpBin);
+}
+
+void cargarArchivoErr(FILE* fpTxt, const char* linea)
+{
+    fprintf(fpTxt, "%s", linea);
+}
+
+/*
+void trozarCamposLongVariable(t_datos* d, char* cad)
+{
+    char* aux = strchr(cad, '\n');
+    *aux = '\0';
+
+    aux = strrchr(cad, '|');
+    d->estado = aux;
+    *aux='\0';
+
+}
+*/
+/**************************************************** Validación ****************************************************/
 
 int validarDatos(t_datos *socio, t_fecha *fProceso)
 {
-    int hayError = 0;
+   int hayError = 0;
 
-    ///Documento - Listo
+    ///Documento
     hayError += validarDocumento(socio->dni);
 
     ///Nombre y apellido
     normalizarApeYNom(socio->nomAp); ///No valido nada, solo normalizo.
 
-    ///FechaNacimiento - Listo
-    if(esFechaValida(&socio->fechNac) == TODO_OK)
+    ///FechaNacimiento
+    if(esFechaValida(&socio->fechNac) == TODO_OK) ///hay error
         hayError += fechaFormal(&socio->fechNac, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Sexo - Listo
+    ///Sexo
     hayError += validarSexo(&socio->sexo); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
 
     ///Fecha Afilicación
-    if(esFechaValida(&socio->fechAfi) == TODO_OK)
+    if(esFechaValida(&socio->fechAfi) == TODO_OK) ///hay error
         hayError += fechaAfiliacion(&socio->fechNac, &socio->fechAfi, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Categoria - Listo
+    ///Categoria
     hayError += validarCategoria(socio->categoria);
 
-    ///Ultima cuota paga - Listo
-    if(esFechaValida(&socio->fechUltCuot) == TODO_OK)
+    ///Ultima cuota paga
+    if(esFechaValida(&socio->fechUltCuot) == TODO_OK) ///hay error
         hayError += fechaUltimaCuotaPaga(&socio->fechAfi, &socio->fechUltCuot, fProceso);
     else
         hayError++; ///Podría poner return FALLA_DATO
 
-    ///Estado - Listo
-    hayError =+ validarEstado(&socio->estado); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
+    ///Estado
+    hayError += validarEstado(&socio->estado); ///Le mando la dirección para poder modificarlo en la función. Si no se la mando tira Warning
 
 
     //Si la variable hayError es > 0 hubo un error en algun lado y se guardará el registro leido en el Archivo de texto de errores.
@@ -163,7 +210,7 @@ int validarDocumento(long dni)
 }
 
 
-///Nombre y apellido                    Deberia preguntar por si es letra en lugar de espacio
+///Nombre y apellido                                    Deberia preguntar por si es letra en lugar de espacio
 char* normalizarApeYNom(char *apeYNom)
 {
     char *lectura = apeYNom, *escritura = apeYNom;
@@ -233,7 +280,6 @@ void aMinuscula(char *c)
     }
 }
 
-///PRUEBA
 int esLetra(char c)
 {
     if((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))
@@ -242,7 +288,6 @@ int esLetra(char c)
     }
     return ERROR;
 }
-
 
 
 ///Fecha de Nacimiento
@@ -283,6 +328,7 @@ t_fecha restaFecha(t_fecha *fProceso)
     return fProcesoMenosDiez;
 }
 
+
 ///Sexo
 int validarSexo(char *sexo)
 {
@@ -291,15 +337,14 @@ int validarSexo(char *sexo)
     {
         return DATO_OK;
     }
-    return FALLA_DATO;
+	return FALLA_DATO;
 }
 
 
-///fecha afiliacion - Asumo que tambien debe cumplir: fecha de nacimiento < (fecha de proceso - 10)
-int fechaAfiliacion(t_fecha *fechNac, t_fecha *fechAfi, t_fecha *fProceso) ///Podria mandar una copia de fProceso y no la dirección ya que no tengo que modificarla o ponerle 'const'
+///fecha afiliacion
+int fechaAfiliacion(t_fecha *fechNac, t_fecha *fechAfi, t_fecha *fProceso)
 {
     ///Fecha de nacimiento < fecha de afiliación <= fecha de proceso
-
     return DATO_OK;
 }
 
@@ -395,5 +440,153 @@ int validarEstado(char *estado)
         return DATO_OK;
     }
     return FALLA_DATO;
+}
+
+
+/**************************************************** Menu Opciones ****************************************************/
+
+char iniciarMenu()
+{
+    char opcion;
+    opcion = menuConErr("Elijir una Opcion\n\n"
+                        "A - Alta\n"
+                        "B - Baja\n"
+                        "C - Modificacion\n"
+                        "D - Mostrar Informacion de un Socio\n"
+                        "E - Listado de Socios Ordenados por DNI\n"
+                        "F - Salir\n"
+                        "--->",
+                        "ABCDEFabcdef");
+    printf("Opcion elegido: %c\n", opcion);
+
+    return opcion;
+}
+
+char menuConErr(const char* mensaje, const char* opciones)
+{
+    char esOpcion;
+    int priVez = 1;
+
+    do
+    {
+        printf("%s%s",
+               priVez ? priVez = 0, "" : "ERROR - OPCION NO VALIDA.\n",
+               mensaje);
+        fflush(stdin);
+        scanf("%c", &esOpcion);
+    }while(strchr(opciones, esOpcion)==NULL);
+    return esOpcion;
+}
+
+/**************************************************** Generar Idx  ****************************************************/
+int contarCantidadRegistrosBin(const char* pathArchBin)
+{
+    int cantRegistros = 0;
+    FILE* fpBin;
+    t_datos datos;
+
+    fpBin = fopen(pathArchBin, "rb");
+    if(fpBin == NULL)
+    {
+        printf("ERROR AL ABRIR ARCHIVO BINARIO");
+        return -1;
+    }
+
+    fread(&datos, sizeof(datos),1,fpBin);
+
+    while(!feof(fpBin))
+    {
+        cantRegistros++;
+        fread(&datos, sizeof(datos),1,fpBin);
+    }
+
+    fclose(fpBin);
+    return cantRegistros;
+}
+
+t_indice* indiceArmar(const char *pathAlus, int cantRegistros, int (*cmp)(void *, void *))
+{
+    t_indice* indice;
+    FILE *fpBin;
+    t_datos dato;
+    int i = 0, j = 0, cantAltas = 0;
+
+    fpBin = fopen(pathAlus, "rb");
+    if(fpBin == NULL)
+    {
+        printf("ERROR AL ABRIR ARCHIVO BINARIO");
+        exit(0);
+    }
+
+    indice = (t_indice *)malloc(sizeof(t_indice) * cantRegistros);
+    if(!indice)
+    {
+        printf("ERROR EN LA RESERVA DE MEMORIA");
+        system("PAUSE");
+        exit(1);
+    }
+
+    fread(&dato, sizeof(dato), 1, fpBin);
+    while(!feof(fpBin))
+    {
+
+        if(dato.estado == 'A')
+        {
+            indice[i].dni = dato.dni;
+            indice[i].pos = j;
+            i++;
+            cantAltas++;
+            fread(&dato, sizeof(dato), 1, fpBin);
+        }else{
+            fread(&dato, sizeof(dato), 1, fpBin);
+        }
+
+        j++;
+    }
+
+    bubbleSort(indice, cantAltas, sizeof(t_indice), cmp);
+
+    fclose(fpBin);
+    return indice;
+}
+
+void bubbleSort(void *vec, size_t cantReg, size_t tamanyo, int (*cmp)(void *, void *))
+{
+    int i, j;
+
+    for(i = 0; i < cantReg; i++)
+        for(j = 0; j < cantReg - 1; j++)
+            if(cmp(vec + j * tamanyo,  vec + (j + 1) * tamanyo) > 0)
+                interchange(vec + j * tamanyo,  vec + (j + 1) * tamanyo, tamanyo);
+}
+
+void interchange(void *a, void *b, size_t tamanyo)
+{
+    char *aux = malloc(tamanyo);
+
+    memcpy(aux, a, tamanyo);
+    memcpy(a, b, tamanyo);
+    memcpy(b, aux, tamanyo);
+
+    free(aux);
+}
+
+int comparaDniEnIndice(void *a, void *b)
+{
+    t_indice *idx1 = (t_indice *)a;
+    t_indice *idx2 = (t_indice *)b;
+
+    return idx1->dni - idx2->dni;
+}
+
+void indiceMostrar(t_indice* idx, int cantRegistros)        ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR
+{
+
+    printf("\nCONTENIDO DEL INDICE: \n");
+    for(int i=0;i<cantRegistros; i++)
+    {
+        printf("%ld \t %d", idx[i].dni, idx[i].pos);
+        printf("\n");
+    }
 }
 
