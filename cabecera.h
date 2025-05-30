@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h> ///Para booleanos
+#include "indice.h" //Temporal para que no arroje warinings, creo
 
 #define TAMNOMAP 60
 #define TAMCAT 12
@@ -41,10 +42,6 @@ typedef struct{
     char estado;
 }t_datos;
 
-typedef struct{
-    long dni;
-    int pos;
-}t_indice;
 
 ///Main
 void ingresarFechaProceso(t_fecha *f);
@@ -97,9 +94,7 @@ int validarEstado(char *estado);
 char iniciarMenu();
 char menuConErr(const char* texto, const char* opciones);
 
-///INDICE
 int ComparaAlumnosEnIndice(void *a, void *b);
-t_indice* indiceArmar(const char *pathAlus, int cantRegistros, int (*cmp)(void *, void *));
 void bubbleSort(void *vec, size_t cantReg, size_t tamanyo, int (*cmp)(void *, void *));
 void interchange(void *a, void *b, size_t tamanyo);
 void indiceMostrar(t_indice* idx, int cantRegistros);               ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR

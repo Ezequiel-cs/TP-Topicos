@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cabecera.h"
+#include "indice.h"
 
 int main()
 {
@@ -19,11 +20,16 @@ int main()
     {
         ///UNA VEZ ESTÉN BIEN CREADOS LOS ARCHIVOS PROCEDO A CARGAR IDX
         cantRegistros = contarCantidadRegistrosBin(ARCH_BIN);
-        mostrarArchBinario(ARCH_BIN, cantRegistros);
-        printf("LA CANTIDAD DE REGISTROS ES: %d\n", cantRegistros);
 
-        indice = indiceArmar(ARCH_BIN, cantRegistros, comparaDniEnIndice);
-        indiceMostrar(indice, cantRegistros);
+//        indice_crear(&indice);
+//        indice->cantidad = contarCantidadRegistrosBin(ARCH_BIN);
+
+
+        mostrarArchBinario(ARCH_BIN, cantRegistros);                ///SOLO PARA MOSTRAR .BIN Y CORROBORAR
+        printf("LA CANTIDAD DE REGISTROS ES: %d\n", cantRegistros); ///Imagino que prueba
+
+        //indice = generarIndice(ARCH_BIN, cantRegistros, comparaDniEnIndice);
+        //indiceMostrar(indice, cantRegistros);                       ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR
         fflush(stdin);
 
         ///CREAR MENÚ

@@ -493,14 +493,14 @@ int contarCantidadRegistrosBin(const char* pathArchBin)
     FILE* fpBin;
     t_datos datos;
 
-    fpBin = fopen(pathArchBin, "rb");
+    fpBin = fopen(pathArchBin, "rb"); ///Deberia ser: fpBin = fopen(ARCH_BIN, "rb");
     if(fpBin == NULL)
     {
         printf("ERROR AL ABRIR ARCHIVO BINARIO");
         return -1;
     }
 
-    fread(&datos, sizeof(datos),1,fpBin);
+    fread(&datos, sizeof(datos), 1, fpBin);
 
     while(!feof(fpBin))
     {
@@ -512,51 +512,7 @@ int contarCantidadRegistrosBin(const char* pathArchBin)
     return cantRegistros;
 }
 
-t_indice* indiceArmar(const char *pathAlus, int cantRegistros, int (*cmp)(void *, void *))
-{
-    t_indice* indice;
-    FILE *fpBin;
-    t_datos dato;
-    int i = 0, j = 0, cantAltas = 0;
 
-    fpBin = fopen(pathAlus, "rb");
-    if(fpBin == NULL)
-    {
-        printf("ERROR AL ABRIR ARCHIVO BINARIO");
-        exit(0);
-    }
-
-    indice = (t_indice *)malloc(sizeof(t_indice) * cantRegistros);
-    if(!indice)
-    {
-        printf("ERROR EN LA RESERVA DE MEMORIA");
-        system("PAUSE");
-        exit(1);
-    }
-
-    fread(&dato, sizeof(dato), 1, fpBin);
-    while(!feof(fpBin))
-    {
-
-        if(dato.estado == 'A')
-        {
-            indice[i].dni = dato.dni;
-            indice[i].pos = j;
-            i++;
-            cantAltas++;
-            fread(&dato, sizeof(dato), 1, fpBin);
-        }else{
-            fread(&dato, sizeof(dato), 1, fpBin);
-        }
-
-        j++;
-    }
-
-    bubbleSort(indice, cantAltas, sizeof(t_indice), cmp);
-
-    fclose(fpBin);
-    return indice;
-}
 
 void bubbleSort(void *vec, size_t cantReg, size_t tamanyo, int (*cmp)(void *, void *))
 {
