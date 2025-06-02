@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "indice.h"
+
 //#include "cabecera.h"
 
 void indice_crear (t_indice *indice)
@@ -19,13 +21,30 @@ void indice_crear (t_indice *indice)
     indice->cantidad = 0;
 }
 
+
+int indice_vacio(const t_indice *indice)
+{
+    if(indice->cantidad == 0)
+        return INDICE_VACIO;
+}
+
+
+int indice_lleno(const t_indice *indice, unsigned tamDato)
+{
+    (void)tamDato; ///por ahora se supone que no lo voy a usar pinta que lo voy a necesitar en indice_insertar y indice_cargar
+
+    if(indice->cantidad == indice->capacidad)
+        return INDICE_LLENO;
+}
+
+
 int indice_insertar (t_indice *indice, const t_reg_indice *pReg)
 {
     int i;
     int nuevaCapacidad;
     t_reg_indice *aux;
 
-    if(indice->cantidad == indice->capacidad)
+    if(indice_lleno(indice, sizeof(t_reg_indice)) == INDICE_LLENO)
     {
         nuevaCapacidad = indice->capacidad + ((indice->capacidad * PORCENTAJE_CRECIMIENTO) / 100);
 
@@ -37,9 +56,12 @@ int indice_insertar (t_indice *indice, const t_reg_indice *pReg)
             exit(1); //return ERROR;
         }
 
-        indice->datos = aux;
-        indice->capacidad = nuevaCapacidad;
+        indice->datos = aux;                    ///Asigno la nueva memoria a datos
+        indice->capacidad = nuevaCapacidad;     ///Asigno la nueva capacidad
     }
+
+    //Inserto de manera ordenada
+
 
 
 }
