@@ -16,7 +16,7 @@
 #define FALLA_DATO 1
 #define DATO_OK 0
 #define ANIOS_RESTA 10
-#define FALLA_CADENA "" ///???????????
+//#define FALLA_CADENA "" ///???????????
 
 #define ARCH_TXTS "socios.txt"
 #define ARCH_BIN "socios.bin"
@@ -93,6 +93,7 @@ int validarEstado(char *estado);
 ///Menu
 char iniciarMenu();
 char menuConErr(const char* texto, const char* opciones);
+void cargarMenu(t_indice *indice, const char opcion);  //Nuevo
 
 int ComparaAlumnosEnIndice(void *a, void *b);
 void bubbleSort(void *vec, size_t cantReg, size_t tamanyo, int (*cmp)(void *, void *));

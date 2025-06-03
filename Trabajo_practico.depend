@@ -14,3 +14,22 @@
 	<stdlib.h>
 	"cabecera.h"
 
+1748964252 source:c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\funciones.c
+	"cabecera.h"
+	"indice.h"
+
+1748962546 c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\cabecera.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"indice.h"
+
+1748962913 c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\indice.h
+
+1748962933 source:c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\indice.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"indice.h"
+

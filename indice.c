@@ -22,49 +22,80 @@ void indice_crear (t_indice *indice)
 }
 
 
+int indice_insertar (t_indice *indice, const t_reg_indice *pReg)
+{
+//    int i;
+//    int nuevaCapacidad;
+//    t_reg_indice *aux;
+//
+//    if(indice_lleno(indice, sizeof(t_reg_indice)) == INDICE_LLENO)
+//    {
+//        nuevaCapacidad = indice->capacidad + ((indice->capacidad * PORCENTAJE_CRECIMIENTO) / 100);
+//
+//        aux = (t_reg_indice *)realloc(indice->datos, sizeof(t_reg_indice) * nuevaCapacidad);
+//
+//        if(!aux)
+//        {
+//            printf("Error de Ampliacion de Memoria.\n");
+//            exit(1); //return ERROR;
+//        }
+//
+//        indice->datos = aux;                    ///Asigno la nueva memoria a datos
+//        indice->capacidad = nuevaCapacidad;     ///Asigno la nueva capacidad
+//    }
+//
+//    //Inserto de manera ordenada
+//
+//
+    return 0;
+}
+
+
+int indice_eliminar (t_indice *indice, t_reg_indice *m)
+{
+    return 0;
+}
+
+
 int indice_vacio(const t_indice *indice)
 {
     if(indice->cantidad == 0)
         return INDICE_VACIO;
+
+    return OK;
 }
 
 
 int indice_lleno(const t_indice *indice, unsigned tamDato)
 {
-    (void)tamDato; ///por ahora se supone que no lo voy a usar pinta que lo voy a necesitar en indice_insertar y indice_cargar
+    //(void)tamDato; ///Ver como usar este datos, seguramente en menu
 
     if(indice->cantidad == indice->capacidad)
         return INDICE_LLENO;
+
+    return OK;
 }
 
 
-int indice_insertar (t_indice *indice, const t_reg_indice *pReg)
+int indice_buscar (const t_indice *indice, t_reg_indice *reg_indice)
 {
-    int i;
-    int nuevaCapacidad;
-    t_reg_indice *aux;
-
-    if(indice_lleno(indice, sizeof(t_reg_indice)) == INDICE_LLENO)
-    {
-        nuevaCapacidad = indice->capacidad + ((indice->capacidad * PORCENTAJE_CRECIMIENTO) / 100);
-
-        aux = (t_reg_indice *)realloc(indice->datos, sizeof(t_reg_indice) * nuevaCapacidad);
-
-        if(!aux)
-        {
-            printf("Error de Ampliacion de Memoria.\n");
-            exit(1); //return ERROR;
-        }
-
-        indice->datos = aux;                    ///Asigno la nueva memoria a datos
-        indice->capacidad = nuevaCapacidad;     ///Asigno la nueva capacidad
-    }
-
-    //Inserto de manera ordenada
+    return 0;
+}
 
 
+int indice_cargar (t_indice *indice, const char* path)
+{
+    return 0;
+}
+
+
+void indice_vaciar(t_indice *indice)
+{
 
 }
+
+
+
 
 
 

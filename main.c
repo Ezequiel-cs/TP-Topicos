@@ -6,43 +6,33 @@
 int main()
 {
     t_fecha fProceso;
-    t_indice* indice;
+    t_indice indice;
     int cantRegistros = 0;
-    //char opcion;
+    char opcion;
 
     ingresarFechaProceso(&fProceso);
-    ///Prueba para ver si lee bien la fecha
-    //printf("La fecha es: %02d/%02d/%d", fechaProceso.dia, fechaProceso.mes, fechaProceso.anio);
 
-
-
-    if(abrirArchivos(&fProceso) == TODO_OK)
+    if(abrirArchivos(&fProceso) != TODO_OK)
     {
-        ///UNA VEZ ESTÉN BIEN CREADOS LOS ARCHIVOS PROCEDO A CARGAR IDX
-        cantRegistros = contarCantidadRegistrosBin(ARCH_BIN);
-
-//        indice_crear(&indice);
-//        indice->cantidad = contarCantidadRegistrosBin(ARCH_BIN);
-
-
-        mostrarArchBinario(ARCH_BIN, cantRegistros);                ///SOLO PARA MOSTRAR .BIN Y CORROBORAR
-        printf("LA CANTIDAD DE REGISTROS ES: %d\n", cantRegistros); ///Imagino que prueba
-
-        //indice = generarIndice(ARCH_BIN, cantRegistros, comparaDniEnIndice);
-        //indiceMostrar(indice, cantRegistros);                       ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR
-        fflush(stdin);
-
-        ///CREAR MENÚ
-        //opcion = iniciarMenu();
-
-        ///ZONA DE SWITCH PARA FUNCION DEPENDIENDO DE OPCION
-
-
-    }
-    else
         puts("Fin del programa.");
+        return 0;
+    }
 
+    indice_crear(&indice);                  ///1. Creo indice
 
-    free(indice);
+    cantRegistros = contarCantidadRegistrosBin(ARCH_BIN);
+    indice.cantidad = cantRegistros;
+
+    indice_cargar(&indice, ARCH_BIN);       ///2. Cargo el indice, deberia verificar que el indice este vacio?
+
+    ///CREAR MENÚ
+    do
+    {
+        opcion = iniciarMenu();             ///3. Se inicia el menu
+        cargarMenu(&indice, opcion);        ///4. Voy al switch
+
+    }while(opcion != 'S');
+
+    indice_vaciar(&indice);
     return 0;
 }

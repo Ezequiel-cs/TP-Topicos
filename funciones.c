@@ -1,4 +1,5 @@
 #include "cabecera.h"
+#include "indice.h"
 
 void ingresarFechaProceso(t_fecha *f)
 {
@@ -54,7 +55,7 @@ int abrirArchivos(t_fecha *fProceso)
 
     if(!ptxtS || !pbin || !ptxtE)
     {
-        printf("Error al abrir Archivos.");
+        printf("Error al abrir Archivos.\n");
         return ERROR;
     }
 
@@ -456,7 +457,7 @@ int validarEstado(char *estado)
 char iniciarMenu()
 {
     char opcion;
-    opcion = menuConErr("Elijir una Opcion\n\n"
+    opcion = menuConErr("Elija una Opcion\n\n"
                         "A - Alta\n"
                         "B - Baja\n"
                         "C - Modificacion\n"
@@ -465,12 +466,13 @@ char iniciarMenu()
                         "F - Salir\n"
                         "--->",
                         "ABCDEFabcdef");
-    printf("Opcion elegido: %c\n", opcion);
+    aMayuscula(&opcion);                                ///Lo paso a mayuscula
+    printf("Opcion elegida: %c\n", opcion);
 
     return opcion;
 }
 
-char menuConErr(const char* mensaje, const char* opciones)
+char menuConErr(const char *mensaje, const char *opciones)
 {
     char esOpcion;
     int priVez = 1;
@@ -483,8 +485,46 @@ char menuConErr(const char* mensaje, const char* opciones)
         fflush(stdin);
         scanf("%c", &esOpcion);
     }while(strchr(opciones, esOpcion)==NULL);
+
     return esOpcion;
 }
+
+
+void cargarMenu(t_indice *indice, const char opcion)
+{
+    switch(opcion)
+    {
+    case 'A':
+
+        break;
+
+    case 'B':
+        {//No se si esta bien declarar la variable aca
+            t_reg_indice regBusqueda;
+
+            printf("Ingrese el DNI que desea dar de baja: ");
+            scanf("%ld", &regBusqueda.dni);
+
+            if(!(indice_buscar(indice, &regBusqueda)))
+            {
+                printf("No se encontro el DNI ingresado.\n");
+            }
+            //Actualizar estado con 'B';
+            indice_eliminar(indice, &regBusqueda);
+            break;
+        }
+
+    case 'C':
+        break;
+
+    case 'D':
+        break;
+
+    case 'E':
+        break;
+    }
+}
+
 
 /**************************************************** Generar Idx  ****************************************************/
 int contarCantidadRegistrosBin(const char* pathArchBin)
@@ -540,17 +580,19 @@ int comparaDniEnIndice(void *a, void *b)
     t_indice *idx1 = (t_indice *)a;
     t_indice *idx2 = (t_indice *)b;
 
-    return idx1->dni - idx2->dni;
+   // return idx1->dni - idx2->dni;
+    return idx1->datos->dni - idx2->datos->dni;
 }
 
-void indiceMostrar(t_indice* idx, int cantRegistros)        ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR
-{
+//void indiceMostrar(t_indice* idx, int cantRegistros)        ///SOLO PARA MOSTRAR EL INDICE Y CORROBORAR
+//{
+//
+//    printf("\nCONTENIDO DEL INDICE: \n");
+//    for(int i=0;i<cantRegistros; i++)
+//    {
+//        printf("%ld \t %d", idx[i].dni, idx[i].pos);
+//        printf("\n");
+//    }
+//}
 
-    printf("\nCONTENIDO DEL INDICE: \n");
-    for(int i=0;i<cantRegistros; i++)
-    {
-        printf("%ld \t %d", idx[i].dni, idx[i].pos);
-        printf("\n");
-    }
-}
 
