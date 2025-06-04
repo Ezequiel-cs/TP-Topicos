@@ -14,3 +14,48 @@
 	<stdlib.h>
 	"cabecera.h"
 
+1748964252 source:c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\funciones.c
+	"cabecera.h"
+	"indice.h"
+
+1748962546 c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\cabecera.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"indice.h"
+
+1748962913 c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\indice.h
+
+1748962933 source:c:\users\cezsa_000\documents\eze\facu\2025\04. topicos\tp-topicos\indice.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"indice.h"
+
+1748998217 source:c:\users\pc\desktop\entregable_top\tp-topicos\funciones.c
+	"cabecera.h"
+	"indice.h"
+
+1748989900 c:\users\pc\desktop\entregable_top\tp-topicos\cabecera.h
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<stdbool.h>
+	"indice.h"
+
+1748989166 c:\users\pc\desktop\entregable_top\tp-topicos\indice.h
+
+1748989202 source:c:\users\pc\desktop\entregable_top\tp-topicos\indice.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"indice.h"
+	"cabecera.h"
+
+1748986181 source:c:\users\pc\desktop\entregable_top\tp-topicos\main.c
+	<stdio.h>
+	<stdlib.h>
+	"cabecera.h"
+	"indice.h"
+
